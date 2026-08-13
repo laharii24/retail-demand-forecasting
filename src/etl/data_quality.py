@@ -61,7 +61,22 @@ def run() -> None:
     report.append("## Cross-table checks")
     report.append(
         f"- Product IDs in demand_forecasting missing from pricing_optimization: "
-        f"{len(missing_in_pricing)}"
+        f"{len(missing_in_pricing)} ({len(missing_in_pricing) / len(demand_products):.1%} "
+        f"of distinct products)"
+    )
+    report.append(
+        "  - Resolution: `clean.py` LEFT JOINs demand_forecasting with pricing_optimization "
+        "and flags matched rows with `has_pricing_data`, rather than dropping unmatched products."
+    )
+
+    report.append("")
+    report.append("## Resolved issues (see clean.py)")
+    report.append(
+        "- `seasonality_factors` / `external_factors` nulls imputed as `\"Unknown\"` category"
+    )
+    report.append(
+        "- Product ID mismatch resolved via LEFT JOIN + `has_pricing_data` flag "
+        "(see cross-table check above)"
     )
 
     REPORT_PATH.write_text("\n".join(report))

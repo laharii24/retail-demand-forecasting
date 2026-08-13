@@ -23,4 +23,9 @@
 - Duplicate rows: 0
 
 ## Cross-table checks
-- Product IDs in demand_forecasting missing from pricing_optimization: 1941
+- Product IDs in demand_forecasting missing from pricing_optimization: 1941 (32.0% of distinct products)
+  - Resolution: `clean.py` LEFT JOINs demand_forecasting with pricing_optimization and flags matched rows with `has_pricing_data`, rather than dropping unmatched products.
+
+## Resolved issues (see clean.py)
+- `seasonality_factors` / `external_factors` nulls imputed as `"Unknown"` category
+- Product ID mismatch resolved via LEFT JOIN + `has_pricing_data` flag (see cross-table check above)
