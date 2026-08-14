@@ -3,3 +3,9 @@ __pycache__/
 data/processed/warehouse.db
 .ipynb_checkpoints/
 .venv/
+
+# dbt
+dbt_retail/target/
+dbt_retail/dbt_packages/
+dbt_retail/logs/
+dbt_retail/profiles.yml

@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: warehouse
+    schema: main
+    tables:
+      - name: demand_forecasting_clean
+        description: >
+          Cleaned demand data (Day 2): seasonality_factors/external_factors
+          nulls imputed as "Unknown"; left-joined with pricing_optimization,
+          flagged with has_pricing_data.
+      - name: inventory_monitoring
+        description: Stock levels, reorder points, supplier lead time per product/store.
+      - name: pricing_optimization
+        description: Price, competitor price, discounts, elasticity per product/store.
