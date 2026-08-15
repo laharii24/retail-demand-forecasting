@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: agg_weekly_sales
+    description: >
+      Weekly sales aggregation at product/store grain. Built from
+      stg_demand_forecasting. sales_week uses SQLite's strftime('%Y-%W', ...),
+      an approximate (non-strict-ISO) week-of-year.
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+      - name: store_id
+        tests:
+          - not_null
+      - name: total_units
+        tests:
+          - not_null
+
+  - name: agg_monthly_sales
+    description: >
+      Monthly sales aggregation at product/store grain, plus the dominant
+      demand_trend label observed that month for each product/store.
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+      - name: store_id
+        tests:
+          - not_null
+      - name: total_units
+        tests:
+          - not_null
