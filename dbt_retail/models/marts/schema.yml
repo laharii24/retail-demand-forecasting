@@ -31,3 +31,20 @@ models:
       - name: total_units
         tests:
           - not_null
+
+  - name: mart_product_store_overview
+    description: >
+      Analysis-ready mart, one row per product_id x store_id, joining
+      demand history (units, revenue, elasticity, promo days), inventory
+      status, and pricing. has_inventory_data / has_pricing_summary_data
+      flag rows where the corresponding LEFT JOIN found no match.
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+      - name: store_id
+        tests:
+          - not_null
+      - name: total_units_sold
+        tests:
+          - not_null

@@ -8,8 +8,7 @@ script loads into a local SQLite database (data/processed/warehouse.db) so the
 pipeline is runnable without cloud credentials. The schema and load logic are
 written so swapping the `sqlite3` connection for a BigQuery/Snowflake client
 is a drop-in change later (see load_to_warehouse()).
-"""
-
+""" 
 import sqlite3
 from pathlib import Path
 
