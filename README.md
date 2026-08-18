@@ -40,9 +40,15 @@ three complementary tables:
 - [x] Null / duplicate / negative-value checks (`src/etl/data_quality.py`)
 - [x] Date range validation
 - [x] Cross-table referential check (Product ID coverage between tables)
-- [ ] Resolve high null rate in `seasonality_factors` / `external_factors`
-- [ ] Document data lineage
+- [x] Resolve high null rate in `seasonality_factors` / `external_factors` — imputed as "Unknown" in staging    layer (`stg_demand_forecasting.sql`)
+- [x] Document data lineage — `dbt docs generate` / lineage graph
 
+
+### Week 1, Day 7 — dbt Testing & Documentation ✅
+- [x] Added not_null tests on `product_id` / `store_id` in mart model
+- [x] Added custom test for duplicate product/store rows in joined mart
+- [x] Generated dbt docs + lineage graph
+- [x] All 6 models rebuild clean (0 errors)
 ## Data Quality Findings (Day 1)
 
 See `data/processed/data_quality_report.md` for the full report. Headline
