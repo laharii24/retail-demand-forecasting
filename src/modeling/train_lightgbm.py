@@ -1,5 +1,5 @@
 """
-Day 10: Train a baseline LightGBM model on the Day 9 train/test split.
+Day 11: Train a baseline LightGBM model on the Day 9 train/test split.
 
 Loads train.csv / test.csv, trains a LightGBM regressor to predict
 sales_quantity, evaluates it (MAE / RMSE / MAPE), prints feature
@@ -25,7 +25,8 @@ MODEL_PATH = MODELS_DIR / "lightgbm_baseline.pkl"
 TARGET_COL = "sales_quantity"
 
 # Columns that should never be used as features (identifiers / raw dates)
-DROP_COLS = ["date", "product_id", "store_id", "revenue"]
+DROP_COLS = ["date", "product_id", "store_id"]
+
 
 def load_data():
     if not TRAIN_PATH.exists() or not TEST_PATH.exists():
@@ -68,9 +69,12 @@ def evaluate(y_true, y_pred) -> dict:
         if nonzero.any()
         else float("nan")
     )
-    
-    # WAPE: total error as a % of total actual sales -- not skewed by tiny denominators
-    wape = (np.abs(y_true - y_pred).sum() / np.abs(y_true).sum()) * 100
+
+    # WAPE: sums errors and actuals before dividing, so it doesn't break
+    # down on individual zero-sales rows the way MAPE does. This is the
+    # "honest baseline" metric established on Day 10.
+    wape = np.sum(np.abs(y_true - y_pred)) / np.sum(y_true) * 100
+
     return {"MAE": mae, "RMSE": rmse, "MAPE (%)": mape, "WAPE (%)": wape}
 
 
