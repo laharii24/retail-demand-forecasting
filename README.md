@@ -1,4 +1,4 @@
-# Project 3: Retail Demand Forecasting & Inventory Optimization
+#  Retail Demand Forecasting & Inventory Optimization
 
 An automated analytics platform for retail and supply chain teams. Uses
 time-series forecasting on historical sales, promotions, and seasonality to
