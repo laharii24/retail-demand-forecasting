@@ -6,6 +6,10 @@ does a TIME-BASED train/test split (not random shuffle -- this is
 time-series data and shuffling would leak future info into training),
 sanity-checks the split, and saves train.csv / test.csv for tomorrow's
 LightGBM training script.
+
+Day 14 update: merges in daily-aggregate lag/rolling demand features
+(from feature_table_with_lags.csv) before splitting, so train/test
+carry the new trend features too.
 """
 
 import sqlite3
@@ -31,6 +35,10 @@ FEATURE_TABLE = "fct_demand_features"
 # Name of the date column in that table -- change this if yours differs
 DATE_COL = "date"
 
+# Day 14: daily-aggregate lag/rolling features to merge in
+LAG_FEATURES_PATH = PROCESSED_DIR / "feature_table_with_lags.csv"
+LAG_COLS = ["daily_sales_lag_7", "daily_sales_lag_14", "daily_rolling_mean_7", "daily_rolling_std_7"]
+
 
 def load_features(db_path: Path) -> pd.DataFrame:
     if not db_path.exists():
@@ -47,6 +55,17 @@ def load_features(db_path: Path) -> pd.DataFrame:
         )
     df[DATE_COL] = pd.to_datetime(df[DATE_COL])
     return df
+
+
+def add_lag_features(df: pd.DataFrame) -> pd.DataFrame:
+    if not LAG_FEATURES_PATH.exists():
+        raise FileNotFoundError(
+            f"Could not find {LAG_FEATURES_PATH}. Run "
+            f"src/etl/add_lag_features.py first (Day 14)."
+        )
+    lag_df = pd.read_csv(LAG_FEATURES_PATH, parse_dates=[DATE_COL])
+    lag_df = lag_df[[DATE_COL] + LAG_COLS].drop_duplicates(subset=DATE_COL)
+    return df.merge(lag_df, on=DATE_COL, how="left")
 
 
 def time_based_split(df: pd.DataFrame, train_fraction: float):
@@ -85,6 +104,10 @@ def main():
     print(f"Loading {FEATURE_TABLE} from {DB_PATH} ...")
     df = load_features(DB_PATH)
     print(f"Loaded {df.shape[0]:,} rows, {df.shape[1]} columns.")
+
+    print("Merging Day 14 lag/rolling features ...")
+    df = add_lag_features(df)
+    print(f"After merge: {df.shape[0]:,} rows, {df.shape[1]} columns.")
 
     train, test, cutoff_date = time_based_split(df, TRAIN_FRACTION)
     print(f"\nSplitting at cutoff date: {cutoff_date}")
